@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Chatbot - College Help Hub</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ===== CHATBOT PAGE ===== */
+    body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    .chat-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 1rem 1rem 0;
+      overflow: hidden;
+    }
+
+    /* Chat header */
+    .chat-header {
+      background: white;
+      border-radius: 14px 14px 0 0;
+      padding: 1rem 1.5rem;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .bot-avatar {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, #8B5CF6, #6C4EE4);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .bot-info h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .bot-status {
+      font-size: 0.78rem;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .bot-status::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .chat-actions { margin-left: auto; display: flex; gap: 0.5rem; }
+    .chat-action-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .chat-action-btn:hover { border-color: var(--primary); color: var(--primary); background: white; }
+
+    /* Messages area */
+    .messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.2rem 1.5rem;
+      background: white;
+      border: 1px solid var(--border);
+      border-top: none;
+      border-bottom: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Message bubble */
+    .message {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+      animation: fadeUp 0.3s ease;
+      max-width: 85%;
+    }
+    .message.user { flex-direction: row-reverse; margin-left: auto; }
+    .message.bot  { margin-right: auto; }
+
+    .msg-avatar {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .msg-avatar.bot-av  { background: linear-gradient(135deg, #8B5CF6, #6C4EE4); }
+    .msg-avatar.user-av { background: linear-gradient(135deg, #60A5FA, #2563EB); }
+
+    .msg-bubble {
+      padding: 0.75rem 1rem;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      position: relative;
+    }
+    .message.bot  .msg-bubble {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+      color: var(--text);
+    }
+    .message.user .msg-bubble {
+      background: var(--primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg-time {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-top: 0.3rem;
+      text-align: right;
+    }
+    .message.user .msg-time { text-align: left; color: rgba(255,255,255,0.7); }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 0.75rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
+    }
+    .typing-dot {
+      width: 7px; height: 7px;
+      background: var(--text-secondary);
+      border-radius: 50%;
+      animation: typingBounce 1.2s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30%           { transform: translateY(-6px); }
+    }
+
+    /* Quick prompt chips */
+    .quick-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      border: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+    }
+    .prompt-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .prompt-chip:hover { border-color: var(--primary); color: var(--primary); background: #EDE9FE; }
+
+    /* Input area */
+    .input-area {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 0 0 14px 14px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      resize: none;
+      max-height: 120px;
+      background: var(--bg);
+      color: var(--text);
+      transition: border-color 0.2s;
+      line-height: 1.5;
+    }
+    .chat-input:focus { border-color: var(--primary); background: white; }
+
+    .send-btn {
+      width: 44px; height: 44px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .send-btn:hover    { background: var(--primary-dark); transform: scale(1.05); }
+    .send-btn:disabled { background: var(--text-secondary); cursor: not-allowed; transform: none; }
+
+    /* Explain simple button */
+    .explain-btn {
+      background: linear-gradient(135deg, var(--accent), #EA580C);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      margin-top: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: opacity 0.2s;
+    }
+    .explain-btn:hover { opacity: 0.85; }
+
+    @media (max-width: 600px) {
+      .chat-wrapper { padding: 0.5rem 0.5rem 0; }
+      .quick-prompts { display: none; }
+      .chat-actions  { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>College Help Hub</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="notes.html">Notes</a></li>
+        <li><a href="internships.html">Internships</a></li>
+        <li><a href="doubts.html">Doubts</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="chatbot.html" class="active">AI Chat</a></li>
+      </ul>
+      <a href="login.html" id="userBtn" class="btn-login">Login / Signup</a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <!-- CHAT -->
+  <div class="chat-wrapper">
+
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="bot-avatar"><i class="fas fa-robot"></i></div>
+      <div class="bot-info">
+        <h3>HubBot — AI Study Assistant</h3>
+        <div class="bot-status">Online · Ready to help</div>
+      </div>
+      <div class="chat-actions">
+        <button class="chat-action-btn" onclick="clearChat()">
+          <i class="fas fa-trash"></i> Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages-area" id="messagesArea">
+      <!-- Welcome message added by JS -->
+    </div>
+
+    <!-- Quick Prompts -->
+    <div class="quick-prompts" id="quickPrompts">
+      <span style="font-size:0.78rem;font-weight:700;color:var(--text-secondary);align-self:center">Try:</span>
+      <button class="prompt-chip" onclick="sendQuickPrompt(this)">What is DBMS?</button>
+      <button class="prompt-chip" onclick="sendQuickPrompt(this)">Explain OOP concepts</button>
+      <button class="prompt-chip" onclick="sendQuickPrompt(this)">How to prepare for placements?</button>
+      <button class="prompt-chip" onclick="sendQuickPrompt(this)">What is TCP/IP?</button>
+      <button class="prompt-chip" onclick="sendQuickPrompt(this)">Explain OS scheduling</button>
+      <button class="prompt-chip" onclick="sendQuickPrompt(this)">Tips for resume writing</button>
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <textarea
+        class="chat-input"
+        id="chatInput"
+        placeholder="Ask me anything about your studies..."
+        rows="1"
+      ></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== NAVBAR =====
+    const hamburger = document.getElementById("hamburger");
+    const navLinks  = document.getElementById("navLinks");
+    hamburger.addEventListener("click", () => navLinks.classList.toggle("open"));
+
+    // ===== USER =====
+    const user    = JSON.parse(localStorage.getItem("user"));
+    const userBtn = document.getElementById("userBtn");
+    if (user) { userBtn.innerText = "Hi, " + user.username; userBtn.href = "dashboard.html"; }
+
+    // ===== AUTO RESIZE TEXTAREA =====
+    const chatInput = document.getElementById("chatInput");
+    chatInput.addEventListener("input", function() {
+      this.style.height = "auto";
+      this.style.height = Math.min(this.scrollHeight, 120) + "px";
+    });
+
+    // ===== SEND ON ENTER (Shift+Enter for new line) =====
+    chatInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // ===== CHAT HISTORY =====
+    let chatHistory = [];
+
+    // ===== WELCOME MESSAGE =====
+    window.addEventListener("DOMContentLoaded", () => {
+      const name = user ? user.username : "Student";
+      addBotMessage(
+        `Hi ${name}! 👋 I'm HubBot, your AI study assistant.\n\nI can help you with:\n• 📚 Explaining college subjects (DBMS, OS, CN, DSA...)\n• 💼 Career and placement tips\n• 📝 Resume and interview advice\n• 🤔 Any academic doubts\n\nWhat would you like to learn today?`
+      );
+    });
+
+    // ===== SEND MESSAGE =====
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      // Add user message to UI
+      addUserMessage(text);
+      chatInput.value = "";
+      chatInput.style.height = "auto";
+
+      // Hide quick prompts after first message
+      document.getElementById("quickPrompts").style.display = "none";
+
+      // Show typing indicator
+      const typingId = showTyping();
+
+      // Get AI response
+      const response = await getAIResponse(text);
+
+      // Remove typing, show response
+      removeTyping(typingId);
+      addBotMessage(response);
+    }
+
+    // ===== QUICK PROMPT =====
+    function sendQuickPrompt(btn) {
+      chatInput.value = btn.textContent;
+      sendMessage();
+    }
+
+    // ===== ADD USER MESSAGE =====
+    function addUserMessage(text) {
+      const area = document.getElementById("messagesArea");
+      const initial = user ? user.username[0].toUpperCase() : "U";
+      const time  = getCurrentTime();
+
+      const msg = document.createElement("div");
+      msg.className = "message user";
+      msg.innerHTML = `
+        <div>
+          <div class="msg-bubble">${escapeHtml(text)}</div>
+          <div class="msg-time">${time}</div>
+        </div>
+        <div class="msg-avatar user-av">${initial}</div>
+      `;
+      area.appendChild(msg);
+      scrollToBottom();
+
+      // Save to history for context
+      chatHistory.push({ role: "user", content: text });
+    }
+
+    // ===== ADD BOT MESSAGE =====
+    function addBotMessage(text, showExplainBtn = true) {
+      const area = document.getElementById("messagesArea");
+      const time = getCurrentTime();
+
+      // Format text: convert \n to <br> and **bold** to <strong>
+      const formatted = escapeHtml(text)
+        .replace(/\n/g, "<br>")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/•/g, "•");
+
+      const msg = document.createElement("div");
+      msg.className = "message bot";
+      msg.innerHTML = `
+        <div class="msg-avatar bot-av"><i class="fas fa-robot"></i></div>
+        <div>
+          <div class="msg-bubble">
+            ${formatted}
+            ${showExplainBtn && text.length > 100
+              ? `<br><button class="explain-btn" onclick="explainSimple(this, '${encodeURIComponent(text)}')">
+                   <i class="fas fa-magic"></i> Explain Simpler
+                 </button>`
+              : ""}
+          </div>
+          <div class="msg-time">${time}</div>
+        </div>
+      `;
+      area.appendChild(msg);
+      scrollToBottom();
+
+      // Save to history
+      chatHistory.push({ role: "assistant", content: text });
+    }
+
+    // ===== EXPLAIN IN SIMPLE WORDS =====
+    async function explainSimple(btn, encodedText) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Simplifying...';
+
+      const originalText = decodeURIComponent(encodedText);
+      const prompt = `Explain this in the simplest possible words, like explaining to a 10-year-old student: "${originalText.substring(0, 300)}"`;
+
+      const typingId = showTyping();
+      const response = await getAIResponse(prompt);
+      removeTyping(typingId);
+      addBotMessage("🧒 **Simple Explanation:**\n\n" + response, false);
+
+      btn.remove(); // remove button after using
+    }
+
+    // ===== TYPING INDICATOR =====
+    function showTyping() {
+      const area = document.getElementById("messagesArea");
+      const id   = "typing-" + Date.now();
+
+      const typing = document.createElement("div");
+      typing.className = "message bot";
+      typing.id = id;
+      typing.innerHTML = `
+        <div class="msg-avatar bot-av"><i class="fas fa-robot"></i></div>
+        <div class="typing-indicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      `;
+      area.appendChild(typing);
+      scrollToBottom();
+
+      // Disable send while waiting
+      document.getElementById("sendBtn").disabled = true;
+
+      return id;
+    }
+
+    function removeTyping(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+      document.getElementById("sendBtn").disabled = false;
+    }
+
+    // ===== GET AI RESPONSE =====
+    // Uses smart pre-written responses for common college topics
+    // You can replace this with a real API call later!
+    async function getAIResponse(userMessage) {
+      // Simulate network delay (0.8–1.5s feels natural)
+      await delay(800 + Math.random() * 700);
+
+      const msg = userMessage.toLowerCase();
+
+      // ===== PRE-WRITTEN SMART RESPONSES =====
+
+      if (msg.includes("dbms") || msg.includes("database") || msg.includes("normalization")) {
+        return "**DBMS (Database Management System)** 📚\n\nA DBMS is software that manages databases.\n\n**Key Concepts:**\n• **Normalization** — organizing data to reduce redundancy (1NF, 2NF, 3NF)\n• **SQL** — language to query databases\n• **ACID** — Atomicity, Consistency, Isolation, Durability\n• **Transactions** — group of operations treated as one\n• **Indexing** — makes searching faster\n\nWould you like me to explain any of these in detail?";
+      }
+
+      if (msg.includes("oop") || msg.includes("object oriented")) {
+        return "**OOP (Object-Oriented Programming)** 🏗️\n\n**4 Pillars of OOP:**\n\n1. **Encapsulation** — bundling data + methods together (like a capsule)\n2. **Inheritance** — child class gets properties of parent class\n3. **Polymorphism** — same method behaves differently (overloading/overriding)\n4. **Abstraction** — hiding complex details, showing only what's needed\n\n**Example:** A Car class has attributes (color, speed) and methods (drive(), stop())\n\nWant me to explain with a code example?";
+      }
+
+      if (msg.includes("os") || msg.includes("operating system") || msg.includes("scheduling")) {
+        return "**Operating System** 💻\n\nAn OS manages hardware and software resources.\n\n**CPU Scheduling Algorithms:**\n• **FCFS** — First Come First Served (simple, not efficient)\n• **SJF** — Shortest Job First (minimum avg waiting time)\n• **Round Robin** — each process gets equal time slice\n• **Priority** — higher priority runs first\n\n**Key Topics:** Process management, Memory management, Deadlocks, File systems\n\nWhich topic would you like to explore?";
+      }
+
+      if (msg.includes("dsa") || msg.includes("data structure") || msg.includes("array") || msg.includes("linked list")) {
+        return "**Data Structures & Algorithms** 🔧\n\n**Common Data Structures:**\n• **Array** — fixed size, random access O(1)\n• **Linked List** — dynamic size, sequential access O(n)\n• **Stack** — LIFO (Last In First Out)\n• **Queue** — FIFO (First In First Out)\n• **Tree** — hierarchical structure\n• **Graph** — nodes connected by edges\n\n**Must-know Algorithms:** Binary Search, Bubble Sort, Merge Sort, BFS/DFS\n\nTip: Practice on LeetCode daily for placements! 🎯";
+      }
+
+      if (msg.includes("cn") || msg.includes("computer network") || msg.includes("tcp") || msg.includes("ip")) {
+        return "**Computer Networks** 🌐\n\n**TCP/IP Model Layers:**\n1. **Application** — HTTP, FTP, DNS, SMTP\n2. **Transport** — TCP (reliable) / UDP (fast, unreliable)\n3. **Network** — IP addressing, routing\n4. **Data Link** — MAC address, switches\n\n**Key Concepts:**\n• **TCP** — connection-oriented, guarantees delivery\n• **UDP** — connectionless, faster (used in video calls)\n• **DNS** — converts domain names to IP addresses\n• **HTTP vs HTTPS** — HTTPS is encrypted (SSL/TLS)\n\nWant to learn more about any layer?";
+      }
+
+      if (msg.includes("placement") || msg.includes("interview") || msg.includes("job") || msg.includes("career")) {
+        return "**Placement Preparation Tips** 🎯\n\n**Technical:**\n• Master DSA (arrays, trees, graphs, DP)\n• Learn 1 programming language well (Java/Python/C++)\n• Practice 150+ LeetCode problems\n• Study DBMS, OS, CN basics\n\n**Communication:**\n• Work on English communication\n• Practice mock interviews\n• Prepare \"Tell me about yourself\"\n\n**Projects:**\n• Build 2-3 good projects for resume\n• Host on GitHub\n• Deploy one live project\n\n**Timeline:** Start 6 months before placements! 📅";
+      }
+
+      if (msg.includes("resume") || msg.includes("cv")) {
+        return "**Resume Tips for Students** 📄\n\n**Must-Have Sections:**\n1. **Contact Info** — email, LinkedIn, GitHub\n2. **Education** — college, CGPA (if above 7.5)\n3. **Skills** — programming languages, tools\n4. **Projects** — 2-3 good projects with GitHub links\n5. **Internships** — if any\n6. **Achievements** — hackathons, certifications\n\n**Golden Rules:**\n• Keep it 1 page\n• Use action verbs (Built, Developed, Implemented)\n• Quantify achievements (\"Reduced load time by 40%\")\n• No spelling mistakes!\n• Use ATS-friendly format\n\nWant me to review your resume structure?";
+      }
+
+      if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey")) {
+        const name = user ? user.username : "there";
+        return `Hello ${name}! 👋 Great to see you!\n\nI'm HubBot, your AI study assistant for College Help Hub.\n\nYou can ask me about:\n• Any CS subject (DBMS, OS, CN, DSA, OOP)\n• Placement and interview preparation\n• Resume writing tips\n• Career advice\n\nWhat's on your mind today? 😊`;
+      }
+
+      if (msg.includes("thank")) {
+        return "You're welcome! 😊 Happy to help!\n\nKeep learning and keep growing! 🚀\n\nIf you have more questions, I'm always here. All the best for your studies! 📚";
+      }
+
+      if (msg.includes("explain") && msg.includes("simple")) {
+        return "Sure! Let me break it down simply...\n\nThink of a computer like a restaurant:\n• **CPU** = The chef (does all the work)\n• **RAM** = The kitchen counter (temporary workspace)\n• **Hard Drive** = The pantry (permanent storage)\n• **OS** = The restaurant manager (organizes everything)\n\nWant me to explain something specific in simple terms?";
+      }
+
+      // ===== DEFAULT SMART RESPONSE =====
+      const defaults = [
+        `That's a great question about "${userMessage.substring(0, 40)}..."\n\nAs an AI study assistant, I can help you understand this better.\n\n**My suggestion:** Break this topic into smaller parts and study each one. Start with the basics, then move to complex concepts.\n\nCould you tell me which specific subject or topic you're studying? I can give you a more detailed answer! 📚`,
+        `I understand you're asking about "${userMessage.substring(0, 40)}..."!\n\nHere's my advice as your study assistant:\n\n1. **First**, understand the basic concept\n2. **Then**, look for real-world examples\n3. **Finally**, practice with problems\n\nFor college exams, focus on definitions, examples, and advantages/disadvantages of every concept.\n\nWhat specific topic would you like me to explain? 🎯`,
+        `Great question! Let me help you with this.\n\nFor any college topic, I recommend this study approach:\n• Read the textbook definition first\n• Understand with a real example\n• Draw a diagram if possible\n• Practice past exam questions\n\nCould you be more specific? For example, is this related to a particular subject like DBMS, OS, CN, or something else? I'll give you a detailed explanation! 💡`
+      ];
+
+      return defaults[Math.floor(Math.random() * defaults.length)];
+    }
+
+    // ===== CLEAR CHAT =====
+    function clearChat() {
+      if (!confirm("Clear all messages?")) return;
+      const area = document.getElementById("messagesArea");
+      area.innerHTML = "";
+      chatHistory = [];
+      document.getElementById("quickPrompts").style.display = "flex";
+      addBotMessage("Chat cleared! 🗑️ Let's start fresh. What would you like to learn?", false);
+    }
+
+    // ===== HELPERS =====
+    function scrollToBottom() {
+      const area = document.getElementById("messagesArea");
+      area.scrollTop = area.scrollHeight;
+    }
+
+    function getCurrentTime() {
+      return new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.appendChild(document.createTextNode(text));
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

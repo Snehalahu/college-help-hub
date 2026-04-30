@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - College Help Hub</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-container">
+
+    <!-- Left -->
+    <div class="auth-left">
+      <h1>Welcome Back 👋</h1>
+      <p>Login to access notes, internships, doubts & AI support.</p>
+    </div>
+
+    <!-- Right -->
+    <div class="auth-right">
+      <div class="auth-card">
+        <h2>Login</h2>
+
+        <form id="loginForm">
+          <input type="email"    id="email"    placeholder="Email"    class="auth-input" required>
+          <input type="password" id="password" placeholder="Password" class="auth-input" required>
+          <button type="submit" class="auth-btn">Login</button>
+        </form>
+
+        <p class="auth-switch">
+          Don't have an account? <a href="signup.html">Signup</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <h3>Login Successful 🎉</h3>
+      <p>Welcome back! Redirecting to dashboard...</p>
+      <div class="modal-actions">
+        <button class="auth-btn" onclick="closeSuccessModal()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load script.js first (provides showSuccessModal / closeSuccessModal) -->
+  <script src="script.js"></script>
+
+  <script>
+    // FIX: This is the single, correct login handler.
+    // The old script.js had a conflicting handler that crashed because it tried
+    // to read a "username" field that doesn't exist on this page.
+    // That broken handler has been removed from script.js; this one runs cleanly.
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const form = document.getElementById("loginForm");
+      if (!form) return;
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const email    = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const res = await fetch("http://localhost:5000/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            localStorage.setItem("user", JSON.stringify(data.user));
+            showSuccessModal();   // defined in script.js
+          } else {
+            alert(data.message || "Invalid credentials ❌");
+          }
+
+        } catch (err) {
+          console.error("Login error:", err);
+          alert("Server not responding ❌");
+        }
+      });
+
+    });
+  </script>
+
+</body>
+</html>

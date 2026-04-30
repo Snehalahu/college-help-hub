@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>College Help Hub</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>College Help Hub</span>
+      </a>
+      <ul class="nav-links">
+  <li><a href="index.html" class="active">Home</a></li>
+  <li><a href="notes.html">Notes</a></li>
+  <li><a href="internships.html">Internships</a></li>
+  <li><a href="doubts.html">Doubts</a></li>
+  <li><a href="events.html">Events</a></li>
+  <li><a href="chatbot.html">AI Chat</a></li>
+</ul>
+      <a href="login.html" id="userBtn" class="btn-login">Login / Signup</a>
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Your One-Stop<br/>
+        Platform for<br/>
+        <span class="highlight">College Success</span>
+      </h1>
+      <p class="hero-sub">Access notes, find internships, ask doubts, and grow together with AI-powered support.</p>
+      <div class="hero-buttons">
+        <a href="#notes" class="btn-primary"><i class="fas fa-arrow-right"></i> Explore Notes</a>
+        <a href="#doubts" class="btn-secondary"><i class="fas fa-comment-dots"></i> Ask a Doubt</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="hero-illustration">
+        <div class="hero-blob"></div>
+        <div class="float-card card-1"><i class="fas fa-file-alt"></i><span>1200+ Notes</span></div>
+        <div class="float-card card-2"><i class="fas fa-briefcase"></i><span>350+ Jobs</span></div>
+        <div class="float-card card-3"><i class="fas fa-users"></i><span>5K+ Students</span></div>
+        <div class="students-visual">
+          <div class="student s1">
+            <div class="avatar av1"><i class="fas fa-user-graduate"></i></div>
+          </div>
+          <div class="student s2">
+            <div class="avatar av2"><i class="fas fa-laptop-code"></i></div>
+          </div>
+          <div class="student s3">
+            <div class="avatar av3"><i class="fas fa-book-open"></i></div>
+          </div>
+          <div class="desk-monitor"><i class="fas fa-desktop"></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section">
+    <h2 class="section-title">Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon purple"><i class="fas fa-file-alt"></i></div>
+        <h3>Notes Sharing</h3>
+        <p>Upload, share and access high-quality study materials in one place.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon blue"><i class="fas fa-briefcase"></i></div>
+        <h3>Internship Listings</h3>
+        <p>Discover internships that match your skills and kickstart your career.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green"><i class="fas fa-comments"></i></div>
+        <h3>Doubt Discussion</h3>
+        <p>Ask questions, get answers, and learn from the best student community.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon orange"><i class="fas fa-calendar-check"></i></div>
+        <h3>Event Registrations</h3>
+        <p>Stay updated with college events and register seamlessly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== POPULAR NOTES + LATEST INTERNSHIPS ===== -->
+  <!-- FIX: Both col-blocks must be INSIDE the same two-col-section for the grid to work -->
+  <section class="two-col-section" id="notes">
+
+    <!-- Popular Notes -->
+    <div class="col-block">
+      <div class="col-header">
+        <h2>Popular Notes</h2>
+        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <!-- Notes will load here dynamically via script.js -->
+      <div class="notes-grid" id="notesContainer"></div>
+    </div>
+
+    <!-- Latest Internships -->
+    <div class="col-block" id="internships">
+      <div class="col-header">
+        <h2>Latest Internships</h2>
+        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="internship-list">
+        <div class="internship-card">
+          <div class="company-logo google">
+            <span class="g-logo">G<span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></span>
+          </div>
+          <h4>Frontend Developer Intern</h4>
+          <p class="location"><i class="fas fa-map-marker-alt"></i> Remote</p>
+          <span class="badge full-time">Full Time</span>
+          <button class="btn-apply">Apply Now</button>
+        </div>
+        <div class="internship-card">
+          <div class="company-logo amazon">
+            <span>amazon</span>
+          </div>
+          <h4>Backend Developer Intern</h4>
+          <p class="location"><i class="fas fa-map-marker-alt"></i> Bangalore, India</p>
+          <span class="badge full-time">Full Time</span>
+          <button class="btn-apply">Apply Now</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== RECENT DOUBTS + UPCOMING EVENTS ===== -->
+  <section class="two-col-section" id="doubts">
+
+    <!-- Recent Doubts -->
+    <div class="col-block">
+      <div class="col-header">
+        <h2>Recent Doubts</h2>
+        <a href="#" class="view-all">View More <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="doubts-list">
+        <div class="doubt-card">
+          <div class="avatar-circle purple-av">A</div>
+          <div class="doubt-info">
+            <p class="doubt-q">What is normalization in DBMS?</p>
+            <p class="doubt-meta">Asked by <strong>Anjali</strong> · 2h ago</p>
+          </div>
+          <span class="answer-count"><i class="far fa-comment"></i> 12 Answers</span>
+        </div>
+        <div class="doubt-card">
+          <div class="avatar-circle blue-av">R</div>
+          <div class="doubt-info">
+            <p class="doubt-q">How does CPU scheduling work in OS?</p>
+            <p class="doubt-meta">Asked by <strong>Rahul</strong> · 5h ago</p>
+          </div>
+          <span class="answer-count"><i class="far fa-comment"></i> 8 Answers</span>
+        </div>
+        <div class="doubt-card">
+          <div class="avatar-circle green-av">S</div>
+          <div class="doubt-info">
+            <p class="doubt-q">What is the difference between Array and LinkedList in Java?</p>
+            <p class="doubt-meta">Asked by <strong>Sneha</strong> · 9h ago</p>
+          </div>
+          <span class="answer-count"><i class="far fa-comment"></i> 15 Answers</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="col-block" id="events">
+      <div class="col-header">
+        <h2>Upcoming Events</h2>
+        <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="events-grid">
+        <div class="event-card">
+          <div class="event-icon purple-ev"><i class="fas fa-code"></i></div>
+          <h4>Hackathon 2025</h4>
+          <p class="event-meta"><i class="far fa-calendar"></i> 25 Apr, 2025</p>
+          <p class="event-meta"><i class="fas fa-map-marker-alt"></i> Online</p>
+          <button class="btn-register">Register Now</button>
+        </div>
+        <div class="event-card">
+          <div class="event-icon orange-ev"><i class="fas fa-laptop-code"></i></div>
+          <h4>Web Development Workshop</h4>
+          <p class="event-meta"><i class="far fa-calendar"></i> 2 May, 2025</p>
+          <p class="event-meta"><i class="fas fa-map-marker-alt"></i> Auditorium</p>
+          <button class="btn-register">Register Now</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <i class="fas fa-graduation-cap"></i>
+          <span>College Help Hub</span>
+        </div>
+        <p>Empowering students with the resources they need to succeed in college and beyond.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          
+<li><a href="index.html">Home</a></li>
+<li><a href="notes.html">Notes</a></li>
+<li><a href="internships.html">Internships</a></li>
+<li><a href="doubts.html">Doubts</a></li>
+<li><a href="events.html">Events</a></li>
+<li><a href="chatbot.html">AI Chat</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact Us</h4>
+        <ul>
+          <li><a href="mailto:support@collegehelphub.com"><i class="fas fa-envelope"></i> support@collegehelphub.com</a></li>
+          <li><a href="#"><i class="fab fa-twitter"></i> @CollegeHelpHub</a></li>
+          <li><a href="#"><i class="fab fa-instagram"></i> collegehelphub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 College Help Hub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ===== LOGOUT MODAL ===== -->
+  <!-- FIX: Removed the extra stray </div> that was here before -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <h3>Logout</h3>
+      <p>Are you sure you want to logout?</p>
+      <div class="modal-actions">
+        <button id="cancelLogout" class="btn-secondary">Cancel</button>
+        <button id="confirmLogout" class="btn-primary">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SUCCESS MODAL ===== -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <h3>Login Successful 🚀</h3>
+      <p>Welcome back! Redirecting to homepage...</p>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="closeSuccessModal()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

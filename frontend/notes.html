@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes - College Help Hub</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ===== NOTES PAGE SPECIFIC STYLES ===== */
+    .page-hero {
+      background: linear-gradient(135deg, #EEE8FF 0%, #E0E8FF 60%, #F6F7FB 100%);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+    .page-hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .page-hero p { color: var(--text-secondary); font-size: 1rem; }
+
+    /* Upload Section */
+    .upload-section {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+    .upload-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+    .upload-card h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.65rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      background: var(--bg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color: var(--text);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(108,78,228,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-full { grid-column: 1 / -1; }
+    .btn-upload {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(108,78,228,0.3);
+      margin-top: 0.5rem;
+    }
+    .btn-upload:hover    { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-upload:disabled { background: var(--text-secondary); cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Login prompt for non-logged-in users */
+    .login-prompt {
+      background: #EDE9FE;
+      border: 1.5px solid var(--primary);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .login-prompt a { text-decoration: underline; color: var(--primary-dark); }
+
+    /* Search & Filter Bar */
+    .search-filter-bar {
+      max-width: 1100px;
+      margin: 0 auto 1.5rem;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+    .search-box input {
+      width: 100%;
+      padding: 0.7rem 1rem 0.7rem 2.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      background: white;
+      transition: border-color 0.2s;
+    }
+    .search-box input:focus { border-color: var(--primary); }
+
+    .filter-select {
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      color: var(--text);
+    }
+    .filter-select:focus { border-color: var(--primary); }
+
+    /* Notes Grid */
+    .notes-container {
+      max-width: 1100px;
+      margin: 0 auto 4rem;
+      padding: 0 1.5rem;
+    }
+    .notes-count {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+    }
+    .all-notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Note card colours cycle */
+    .note-card:nth-child(3n+1) .note-thumb { background: linear-gradient(135deg, #8B5CF6, #6C4EE4); }
+    .note-card:nth-child(3n+2) .note-thumb { background: linear-gradient(135deg, #60A5FA, #2563EB); }
+    .note-card:nth-child(3n+3) .note-thumb { background: linear-gradient(135deg, #4ADE80, #16A34A); }
+
+    /* Delete button on note card */
+    .btn-delete-note {
+      background: transparent;
+      border: 1.5px solid #EF4444;
+      color: #EF4444;
+      padding: 0.4rem 0.7rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-delete-note:hover { background: #EF4444; color: white; }
+
+    .note-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .search-filter-bar { flex-direction: column; }
+      .search-box { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>College Help Hub</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="notes.html" class="active">Notes</a></li>
+        <li><a href="internships.html">Internships</a></li>
+        <li><a href="doubts.html">Doubts</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="chatbot.html">AI Chat</a></li>
+      </ul>
+      <a href="login.html" id="userBtn" class="btn-login">Login / Signup</a>
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="page-hero">
+    <h1><i class="fas fa-file-alt" style="color:var(--primary)"></i> Study Notes</h1>
+    <p>Share knowledge, help each other, grow together 📚</p>
+  </section>
+
+  <!-- ===== UPLOAD SECTION ===== -->
+  <div class="upload-section">
+    <div class="upload-card">
+      <h2><i class="fas fa-cloud-upload-alt"></i> Upload New Notes</h2>
+
+      <!-- Login prompt shown to non-logged-in users -->
+      <div class="login-prompt" id="loginPrompt" style="display:none">
+        <i class="fas fa-lock"></i>
+        <span>Please <a href="login.html">login</a> to upload notes.</span>
+      </div>
+
+      <form id="uploadForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="noteTitle">Note Title *</label>
+            <input type="text" id="noteTitle" placeholder="e.g. DBMS Complete Notes" required />
+          </div>
+          <div class="form-group">
+            <label for="noteSubject">Subject *</label>
+            <input type="text" id="noteSubject" placeholder="e.g. Database Management" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group form-full">
+            <label for="noteContent">Description *</label>
+            <textarea id="noteContent" placeholder="Brief description of what these notes cover..."></textarea>
+          </div>
+        </div>
+        <button type="submit" class="btn-upload" id="uploadBtn">
+          <i class="fas fa-upload"></i> Upload Notes
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== SEARCH & FILTER ===== -->
+  <div class="search-filter-bar">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search notes by title or subject..." />
+    </div>
+    <select class="filter-select" id="subjectFilter">
+      <option value="">All Subjects</option>
+      <option value="DBMS">DBMS</option>
+      <option value="OS">Operating Systems</option>
+      <option value="CN">Computer Networks</option>
+      <option value="DSA">Data Structures</option>
+      <option value="Math">Mathematics</option>
+      <option value="Physics">Physics</option>
+      <option value="Other">Other</option>
+    </select>
+    <select class="filter-select" id="sortFilter">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+    </select>
+  </div>
+
+  <!-- ===== NOTES DISPLAY ===== -->
+  <div class="notes-container">
+    <p class="notes-count" id="notesCount">Loading notes...</p>
+    <div class="all-notes-grid" id="allNotesGrid">
+      <!-- Notes load here via JavaScript -->
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <!-- ===== LOGOUT MODAL ===== -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <h3>Logout</h3>
+      <p>Are you sure you want to logout?</p>
+      <div class="modal-actions">
+        <button id="cancelLogout" class="btn-secondary">Cancel</button>
+        <button id="confirmLogout" class="btn-primary">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:5000/api";
+
+    // ===== NAVBAR =====
+    const hamburger = document.getElementById("hamburger");
+    const navLinks  = document.getElementById("navLinks");
+    hamburger.addEventListener("click", () => navLinks.classList.toggle("open"));
+
+    // Close nav when link clicked on mobile
+    navLinks.querySelectorAll("a").forEach(a => {
+      a.addEventListener("click", () => navLinks.classList.remove("open"));
+    });
+
+    // ===== USER SESSION =====
+    const user    = JSON.parse(localStorage.getItem("user"));
+    const userBtn = document.getElementById("userBtn");
+
+    if (user) {
+      // Show username in navbar
+      userBtn.innerText = "Hi, " + user.username;
+      userBtn.href = "dashboard.html";
+    } else {
+      // Show login prompt on upload form
+      document.getElementById("loginPrompt").style.display = "flex";
+      // Disable form inputs
+      document.querySelectorAll("#uploadForm input, #uploadForm textarea, #uploadForm button")
+        .forEach(el => el.disabled = true);
+    }
+
+    // ===== LOGOUT MODAL =====
+    const logoutModal = document.getElementById("logoutModal");
+    if (user) {
+      userBtn.addEventListener("click", (e) => {
+        if (userBtn.href.includes("dashboard")) return; // let dashboard link work
+        e.preventDefault();
+        logoutModal.style.display = "flex";
+      });
+    }
+    document.getElementById("confirmLogout").addEventListener("click", () => {
+      localStorage.removeItem("user");
+      window.location.href = "index.html";
+    });
+    document.getElementById("cancelLogout").addEventListener("click", () => {
+      logoutModal.style.display = "none";
+    });
+
+    // ===== LOAD ALL NOTES =====
+    let allNotes = []; // store all notes for filtering
+
+    async function loadNotes() {
+      const grid  = document.getElementById("allNotesGrid");
+      const count = document.getElementById("notesCount");
+
+      try {
+        const res  = await fetch(`${API}/notes/`);
+        const json = await res.json();
+
+        allNotes = json.data || [];
+        renderNotes(allNotes);
+
+      } catch (err) {
+        console.error("Load notes error:", err);
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <i class="fas fa-wifi"></i>
+            <p>Could not connect to server.<br>Make sure backend is running!</p>
+          </div>`;
+        count.textContent = "0 notes found";
+      }
+    }
+
+    // ===== RENDER NOTES =====
+    function renderNotes(notes) {
+      const grid  = document.getElementById("allNotesGrid");
+      const count = document.getElementById("notesCount");
+
+      count.textContent = `${notes.length} note${notes.length !== 1 ? "s" : ""} found`;
+
+      if (notes.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <i class="fas fa-file-alt"></i>
+            <p>No notes found.<br>Be the first to upload!</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = "";
+
+      notes.forEach((note, i) => {
+        const card = document.createElement("div");
+        card.className = "note-card";
+
+        // Format date nicely
+        const date = new Date(note.created_at).toLocaleDateString("en-IN", {
+          day: "numeric", month: "short", year: "numeric"
+        });
+
+        // Show delete button only if this note belongs to logged-in user
+        const isOwner = user && user.id === note.user_id;
+        const deleteBtn = isOwner
+          ? `<button class="btn-delete-note" onclick="deleteNote(${note.id})">
+               <i class="fas fa-trash"></i> Delete
+             </button>`
+          : "";
+
+        card.innerHTML = `
+          <div class="note-thumb">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <span class="note-subject">${note.subject || "General"}</span>
+          <h4>${note.title}</h4>
+          <p>${note.content || "No description provided."}</p>
+          <p style="font-size:0.75rem;color:var(--text-secondary)">
+            <i class="far fa-calendar"></i> ${date}
+          </p>
+          <div class="note-actions">
+            <button class="btn-download">
+              <i class="fas fa-download"></i> Download
+            </button>
+            ${deleteBtn}
+          </div>
+        `;
+
+        grid.appendChild(card);
+
+        // Animate in with delay
+        setTimeout(() => card.classList.add("visible"), i * 80);
+      });
+    }
+
+    // ===== SEARCH & FILTER =====
+    function applyFilters() {
+      const search  = document.getElementById("searchInput").value.toLowerCase();
+      const subject = document.getElementById("subjectFilter").value.toLowerCase();
+      const sort    = document.getElementById("sortFilter").value;
+
+      let filtered = allNotes.filter(note => {
+        const matchSearch  = note.title.toLowerCase().includes(search) ||
+                             (note.subject || "").toLowerCase().includes(search);
+        const matchSubject = subject === "" ||
+                             (note.subject || "").toLowerCase().includes(subject);
+        return matchSearch && matchSubject;
+      });
+
+      // Sort
+      filtered.sort((a, b) => {
+        if (sort === "newest") return new Date(b.created_at) - new Date(a.created_at);
+        if (sort === "oldest") return new Date(a.created_at) - new Date(b.created_at);
+        return 0;
+      });
+
+      renderNotes(filtered);
+    }
+
+    document.getElementById("searchInput").addEventListener("input",  applyFilters);
+    document.getElementById("subjectFilter").addEventListener("change", applyFilters);
+    document.getElementById("sortFilter").addEventListener("change",   applyFilters);
+
+    // ===== UPLOAD NOTE =====
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!user) { showToast("Please login first!", "error"); return; }
+
+      const title   = document.getElementById("noteTitle").value.trim();
+      const subject = document.getElementById("noteSubject").value.trim();
+      const content = document.getElementById("noteContent").value.trim();
+
+      if (!title || !subject || !content) {
+        showToast("Please fill all fields!", "error");
+        return;
+      }
+
+      const btn = document.getElementById("uploadBtn");
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+      try {
+        const res = await fetch(`${API}/notes/add`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "user-id": user.id   // authMiddleware reads this
+          },
+          body: JSON.stringify({ title, subject, content })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast("Notes uploaded successfully! ✅", "success");
+          // Clear form
+          document.getElementById("noteTitle").value   = "";
+          document.getElementById("noteSubject").value = "";
+          document.getElementById("noteContent").value = "";
+          // Reload notes
+          loadNotes();
+        } else {
+          showToast(data.message || "Upload failed ❌", "error");
+        }
+
+      } catch (err) {
+        console.error("Upload error:", err);
+        showToast("Server not responding ❌", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-upload"></i> Upload Notes';
+      }
+    });
+
+    // ===== DELETE NOTE =====
+    async function deleteNote(noteId) {
+      if (!confirm("Are you sure you want to delete this note?")) return;
+
+      try {
+        const res = await fetch(`${API}/notes/${noteId}`, {
+          method: "DELETE",
+          headers: { "user-id": user.id }
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast("Note deleted ✅", "success");
+          loadNotes();
+        } else {
+          showToast(data.message || "Delete failed ❌", "error");
+        }
+      } catch (err) {
+        showToast("Server error ❌", "error");
+      }
+    }
+
+    // ===== TOAST NOTIFICATION =====
+    function showToast(message, type = "success") {
+      // Remove existing toast
+      const existing = document.querySelector(".toast");
+      if (existing) existing.remove();
+
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas fa-${type === "success" ? "check-circle" : "exclamation-circle"}"></i> ${message}`;
+      document.body.appendChild(toast);
+
+      // Auto remove after 3 seconds
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ===== INIT =====
+    loadNotes();
+  </script>
+</body>
+</html>

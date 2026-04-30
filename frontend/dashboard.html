@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - College Help Hub</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ===== DASHBOARD STYLES ===== */
+    .dashboard-hero {
+      background: linear-gradient(135deg, #6C4EE4 0%, #8B6FF0 100%);
+      padding: 2.5rem 2rem;
+      color: white;
+    }
+    .dashboard-hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .user-greeting h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+    }
+    .user-greeting p { opacity: 0.85; font-size: 0.95rem; }
+
+    .user-avatar-big {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 3px solid rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      max-width: 1100px;
+      margin: -1.5rem auto 0;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 14px;
+      padding: 1.2rem 1.4rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .stat-card.visible { opacity: 1; transform: translateY(0); }
+    .stat-card:hover   { transform: translateY(-3px); }
+
+    .stat-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .stat-icon.purple { background: linear-gradient(135deg, #8B5CF6, #6C4EE4); }
+    .stat-icon.blue   { background: linear-gradient(135deg, #60A5FA, #2563EB); }
+    .stat-icon.green  { background: linear-gradient(135deg, #4ADE80, #16A34A); }
+    .stat-icon.orange { background: linear-gradient(135deg, #FB923C, #EA580C); }
+
+    .stat-info { flex: 1; }
+    .stat-info h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+    }
+    .stat-info p { font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; margin-top: 0.2rem; }
+
+    /* Dashboard main content */
+    .dashboard-content {
+      max-width: 1100px;
+      margin: 2.5rem auto 4rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Section header */
+    .dash-section { margin-bottom: 2.5rem; }
+    .dash-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .dash-section-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .view-link {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: gap 0.2s;
+    }
+    .view-link:hover { gap: 0.5rem; }
+
+    /* Dashboard notes grid */
+    .dash-notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Dashboard doubts list */
+    .dash-doubts-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .dash-doubt-item {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      transition: transform 0.2s;
+    }
+    .dash-doubt-item:hover { transform: translateX(4px); }
+    .dash-doubt-item i    { color: var(--primary); margin-top: 3px; flex-shrink: 0; }
+    .dash-doubt-item p    { font-size: 0.9rem; font-weight: 600; flex: 1; }
+    .dash-doubt-item span { font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap; }
+
+    /* Dashboard answers */
+    .dash-answers-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .dash-answer-item {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: transform 0.2s;
+    }
+    .dash-answer-item:hover { transform: translateX(4px); }
+    .dash-answer-text { flex: 1; font-size: 0.9rem; color: var(--text); }
+    .upvote-chip {
+      background: #DCFCE7;
+      color: #16A34A;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      flex-shrink: 0;
+    }
+
+    /* Quick actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .quick-action-btn {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .quick-action-btn i    { font-size: 1.5rem; }
+    .quick-action-btn span { font-size: 0.85rem; font-weight: 700; }
+    .quick-action-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+
+    /* Not logged in screen */
+    .not-logged-in {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 1rem;
+      padding: 2rem;
+    }
+    .not-logged-in i    { font-size: 3rem; color: var(--border); }
+    .not-logged-in h2   { font-family: 'Poppins', sans-serif; font-size: 1.3rem; }
+    .not-logged-in p    { color: var(--text-secondary); }
+
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>College Help Hub</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="notes.html">Notes</a></li>
+        <li><a href="internships.html">Internships</a></li>
+        <li><a href="doubts.html">Doubts</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="chatbot.html">AI Chat</a></li>
+      </ul>
+      <button id="logoutBtn" class="btn-login" style="cursor:pointer">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <!-- NOT LOGGED IN STATE -->
+  <div class="not-logged-in" id="notLoggedIn" style="display:none">
+    <i class="fas fa-lock"></i>
+    <h2>Please Login First</h2>
+    <p>You need to be logged in to view your dashboard.</p>
+    <a href="login.html" class="btn-primary">
+      <i class="fas fa-sign-in-alt"></i> Go to Login
+    </a>
+  </div>
+
+  <!-- DASHBOARD (shown only when logged in) -->
+  <div id="dashboardMain">
+
+    <!-- HERO -->
+    <div class="dashboard-hero">
+      <div class="dashboard-hero-inner">
+        <div class="user-greeting">
+          <h1>Welcome back, <span id="heroName">Student</span>! 👋</h1>
+          <p>Here's what's happening with your account today.</p>
+          <p style="opacity:0.7;font-size:0.82rem;margin-top:0.3rem" id="heroEmail"></p>
+        </div>
+        <div class="user-avatar-big" id="heroAvatar">S</div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card" id="sc1">
+        <div class="stat-icon purple"><i class="fas fa-file-alt"></i></div>
+        <div class="stat-info">
+          <h3 id="statNotes">0</h3>
+          <p>Notes Uploaded</p>
+        </div>
+      </div>
+      <div class="stat-card" id="sc2">
+        <div class="stat-icon blue"><i class="fas fa-question-circle"></i></div>
+        <div class="stat-info">
+          <h3 id="statDoubts">0</h3>
+          <p>Questions Asked</p>
+        </div>
+      </div>
+      <div class="stat-card" id="sc3">
+        <div class="stat-icon green"><i class="fas fa-comment-dots"></i></div>
+        <div class="stat-info">
+          <h3 id="statAnswers">0</h3>
+          <p>Answers Posted</p>
+        </div>
+      </div>
+      <div class="stat-card" id="sc4">
+        <div class="stat-icon orange"><i class="fas fa-arrow-up"></i></div>
+        <div class="stat-info">
+          <h3 id="statUpvotes">0</h3>
+          <p>Total Upvotes</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="dashboard-content">
+
+      <!-- Quick Actions -->
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <h2><i class="fas fa-bolt" style="color:var(--accent)"></i> Quick Actions</h2>
+        </div>
+        <div class="quick-actions">
+          <a href="notes.html" class="quick-action-btn">
+            <i class="fas fa-upload" style="color:var(--primary)"></i>
+            <span>Upload Notes</span>
+          </a>
+          <a href="doubts.html" class="quick-action-btn">
+            <i class="fas fa-question" style="color:var(--blue)"></i>
+            <span>Ask a Doubt</span>
+          </a>
+          <a href="internships.html" class="quick-action-btn">
+            <i class="fas fa-briefcase" style="color:var(--accent)"></i>
+            <span>Find Internship</span>
+          </a>
+          <a href="events.html" class="quick-action-btn">
+            <i class="fas fa-calendar-check" style="color:var(--green)"></i>
+            <span>View Events</span>
+          </a>
+          <a href="chatbot.html" class="quick-action-btn">
+            <i class="fas fa-robot" style="color:var(--purple)"></i>
+            <span>AI Chatbot</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- My Notes -->
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <h2><i class="fas fa-file-alt" style="color:var(--primary)"></i> My Notes</h2>
+          <a href="notes.html" class="view-link">Upload More <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="dash-notes-grid" id="dashNotes">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- My Questions -->
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <h2><i class="fas fa-question-circle" style="color:var(--blue)"></i> My Questions</h2>
+          <a href="doubts.html" class="view-link">Ask More <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="dash-doubts-list" id="dashDoubts">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- My Answers -->
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <h2><i class="fas fa-comment-dots" style="color:var(--green)"></i> My Answers</h2>
+          <a href="doubts.html" class="view-link">Answer More <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="dash-answers-list" id="dashAnswers">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LOGOUT MODAL -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <h3>Logout</h3>
+      <p>Are you sure you want to logout?</p>
+      <div class="modal-actions">
+        <button id="cancelLogout" class="btn-secondary">Cancel</button>
+        <button id="confirmLogout" class="btn-primary">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:5000/api";
+
+    // ===== NAVBAR =====
+    const hamburger = document.getElementById("hamburger");
+    const navLinks  = document.getElementById("navLinks");
+    hamburger.addEventListener("click", () => navLinks.classList.toggle("open"));
+
+    // ===== CHECK LOGIN =====
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+      document.getElementById("dashboardMain").style.display = "none";
+      document.getElementById("notLoggedIn").style.display  = "flex";
+    } else {
+      loadDashboard();
+    }
+
+    // ===== LOGOUT =====
+    const logoutModal = document.getElementById("logoutModal");
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      logoutModal.style.display = "flex";
+    });
+    document.getElementById("confirmLogout").addEventListener("click", () => {
+      localStorage.removeItem("user");
+      window.location.href = "index.html";
+    });
+    document.getElementById("cancelLogout").addEventListener("click", () => {
+      logoutModal.style.display = "none";
+    });
+
+    // ===== LOAD DASHBOARD =====
+    async function loadDashboard() {
+      // Set hero info immediately from localStorage
+      document.getElementById("heroName").textContent   = user.username;
+      document.getElementById("heroEmail").textContent  = user.email;
+      document.getElementById("heroAvatar").textContent = user.username[0].toUpperCase();
+
+      try {
+        const res  = await fetch(`${API}/dashboard/${user.id}`, {
+          headers: { "user-id": user.id }
+        });
+        const json = await res.json();
+
+        if (!res.ok) {
+          // If token invalid, force logout
+          if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem("user");
+            window.location.href = "login.html";
+            return;
+          }
+          throw new Error(json.message);
+        }
+
+        const { stats, notes, doubts, answers } = json.data;
+
+        // ===== STATS =====
+        animateNumber("statNotes",   stats.totalNotes);
+        animateNumber("statDoubts",  stats.totalDoubts);
+        animateNumber("statAnswers", stats.totalAnswers);
+        animateNumber("statUpvotes", stats.totalUpvotes);
+
+        // Animate stat cards in
+        ["sc1","sc2","sc3","sc4"].forEach((id, i) => {
+          setTimeout(() => {
+            document.getElementById(id).classList.add("visible");
+          }, i * 100);
+        });
+
+        // ===== NOTES =====
+        renderDashNotes(notes);
+
+        // ===== DOUBTS =====
+        renderDashDoubts(doubts);
+
+        // ===== ANSWERS =====
+        renderDashAnswers(answers);
+
+      } catch (err) {
+        console.error("Dashboard error:", err);
+        showToast("Could not load dashboard data ❌", "error");
+      }
+    }
+
+    // ===== RENDER MY NOTES =====
+    function renderDashNotes(notes) {
+      const container = document.getElementById("dashNotes");
+
+      if (!notes || notes.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <i class="fas fa-file-alt"></i>
+            <p>No notes uploaded yet.<br><a href="notes.html" style="color:var(--primary);font-weight:700">Upload your first note →</a></p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      notes.slice(0, 6).forEach((note, i) => { // show max 6
+        const card = document.createElement("div");
+        card.className = "note-card";
+
+        const date = new Date(note.created_at).toLocaleDateString("en-IN", {
+          day: "numeric", month: "short"
+        });
+
+        card.innerHTML = `
+          <div class="note-thumb">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <span class="note-subject">${note.subject || "General"}</span>
+          <h4>${note.title}</h4>
+          <p>${note.content?.substring(0, 60) || ""}${note.content?.length > 60 ? "..." : ""}</p>
+          <p style="font-size:0.75rem;color:var(--text-secondary)">
+            <i class="far fa-calendar"></i> ${date}
+          </p>
+        `;
+
+        container.appendChild(card);
+        setTimeout(() => card.classList.add("visible"), i * 80);
+      });
+    }
+
+    // ===== RENDER MY DOUBTS =====
+    function renderDashDoubts(doubts) {
+      const container = document.getElementById("dashDoubts");
+
+      if (!doubts || doubts.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-question-circle"></i>
+            <p>No questions asked yet.<br><a href="doubts.html" style="color:var(--primary);font-weight:700">Ask your first question →</a></p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      doubts.slice(0, 5).forEach(doubt => {
+        const item = document.createElement("div");
+        item.className = "dash-doubt-item";
+        const timeAgo = getTimeAgo(doubt.created_at);
+        item.innerHTML = `
+          <i class="fas fa-question-circle"></i>
+          <p>${doubt.question}</p>
+          <span>${timeAgo}</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // ===== RENDER MY ANSWERS =====
+    function renderDashAnswers(answers) {
+      const container = document.getElementById("dashAnswers");
+
+      if (!answers || answers.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-comment-dots"></i>
+            <p>No answers posted yet.<br><a href="doubts.html" style="color:var(--primary);font-weight:700">Help someone today →</a></p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      answers.slice(0, 5).forEach(ans => {
+        const item = document.createElement("div");
+        item.className = "dash-answer-item";
+        item.innerHTML = `
+          <i class="fas fa-comment-dots" style="color:var(--green);flex-shrink:0"></i>
+          <p class="dash-answer-text">${ans.answer?.substring(0, 80)}${ans.answer?.length > 80 ? "..." : ""}</p>
+          <div class="upvote-chip">
+            <i class="fas fa-arrow-up"></i> ${ans.upvotes || 0}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // ===== ANIMATE NUMBER (counts up from 0) =====
+    function animateNumber(elementId, target) {
+      const el    = document.getElementById(elementId);
+      const dur   = 800; // ms
+      const steps = 30;
+      const step  = target / steps;
+      let current = 0;
+      const interval = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          el.textContent = target;
+          clearInterval(interval);
+        } else {
+          el.textContent = Math.floor(current);
+        }
+      }, dur / steps);
+    }
+
+    // ===== TIME AGO =====
+    function getTimeAgo(dateStr) {
+      const diff = Math.floor((new Date() - new Date(dateStr)) / 1000);
+      if (diff < 60)    return "just now";
+      if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    // ===== TOAST =====
+    function showToast(message, type = "success") {
+      const existing = document.querySelector(".toast");
+      if (existing) existing.remove();
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas fa-${type === "success" ? "check-circle" : "exclamation-circle"}"></i> ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+  </script>
+</body>
+</html>

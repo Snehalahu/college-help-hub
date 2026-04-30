@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doubt Forum - College Help Hub</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ===== DOUBTS PAGE STYLES ===== */
+    .page-hero {
+      background: linear-gradient(135deg, #E0F2FE 0%, #EDE9FE 60%, #F6F7FB 100%);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+    .page-hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .page-hero p { color: var(--text-secondary); font-size: 1rem; }
+
+    /* ===== MAIN LAYOUT ===== */
+    .doubts-layout {
+      max-width: 1100px;
+      margin: 2rem auto 4rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ===== LEFT — QUESTIONS LIST ===== */
+    .questions-panel h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Search bar */
+    .doubt-search {
+      position: relative;
+      margin-bottom: 1.2rem;
+    }
+    .doubt-search i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+    .doubt-search input {
+      width: 100%;
+      padding: 0.7rem 1rem 0.7rem 2.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      background: white;
+      transition: border-color 0.2s;
+    }
+    .doubt-search input:focus { border-color: var(--primary); }
+
+    /* Question card */
+    .question-card {
+      background: white;
+      border-radius: 14px;
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 4px solid transparent;
+    }
+    .question-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-left-color: var(--primary);
+    }
+    .question-card.active {
+      border-left-color: var(--primary);
+      background: #FAFAFE;
+    }
+    .question-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.6rem;
+    }
+    .q-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .q-text { flex: 1; }
+    .q-text h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+      line-height: 1.4;
+    }
+    .q-meta {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .q-meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+    /* ===== RIGHT — ASK + ANSWER PANEL ===== */
+    .right-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* Ask Question Card */
+    .ask-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      position: sticky;
+      top: 80px;
+    }
+    .ask-card h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .ask-card textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      resize: vertical;
+      min-height: 100px;
+      background: var(--bg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color: var(--text);
+    }
+    .ask-card textarea:focus {
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(108,78,228,0.1);
+    }
+    .char-count {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-align: right;
+      margin-top: 0.3rem;
+    }
+    .btn-ask {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 0.75rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-ask:hover    { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-ask:disabled { background: var(--text-secondary); cursor: not-allowed; transform: none; }
+
+    /* ===== ANSWERS PANEL ===== */
+    .answers-panel {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: none; /* hidden until question selected */
+    }
+    .answers-panel.show { display: block; }
+    .answers-panel h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .selected-question {
+      background: #EDE9FE;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    /* Answer form */
+    .answer-form textarea {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.88rem;
+      outline: none;
+      resize: vertical;
+      min-height: 80px;
+      background: var(--bg);
+      transition: border-color 0.2s;
+      color: var(--text);
+    }
+    .answer-form textarea:focus {
+      border-color: var(--primary);
+      background: white;
+    }
+    .btn-post-answer {
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.88rem;
+      cursor: pointer;
+      margin-top: 0.6rem;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-post-answer:hover    { background: #16A34A; transform: translateY(-1px); }
+    .btn-post-answer:disabled { background: var(--text-secondary); cursor: not-allowed; transform: none; }
+
+    /* Individual answer */
+    .answer-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1rem 0;
+    }
+    .answers-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .answer-item {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .answer-item:hover { border-color: var(--primary); }
+    .answer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .answer-user {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .answer-text {
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .upvote-btn {
+      background: white;
+      border: 1.5px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-family: 'Nunito', sans-serif;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .upvote-btn:hover { border-color: var(--primary); color: var(--primary); background: #EDE9FE; }
+    .upvote-btn.upvoted { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* Login prompt */
+    .login-prompt {
+      background: #EDE9FE;
+      border: 1.5px solid var(--primary);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .login-prompt a { text-decoration: underline; color: var(--primary-dark); }
+
+    @media (max-width: 860px) {
+      .doubts-layout { grid-template-columns: 1fr; }
+      .ask-card { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>College Help Hub</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="notes.html">Notes</a></li>
+        <li><a href="internships.html">Internships</a></li>
+        <li><a href="doubts.html" class="active">Doubts</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="chatbot.html">AI Chat</a></li>
+      </ul>
+      <a href="login.html" id="userBtn" class="btn-login">Login / Signup</a>
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="page-hero">
+    <h1><i class="fas fa-comments" style="color:var(--primary)"></i> Doubt Forum</h1>
+    <p>Ask questions, get answers, help each other grow 🤝</p>
+  </section>
+
+  <!-- ===== MAIN LAYOUT ===== -->
+  <div class="doubts-layout">
+
+    <!-- LEFT: Questions List -->
+    <div class="questions-panel">
+      <h2><i class="fas fa-question-circle" style="color:var(--primary)"></i> All Questions
+        <span id="questionCount" style="font-size:0.8rem;color:var(--text-secondary);font-weight:600"></span>
+      </h2>
+
+      <div class="doubt-search">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchDoubts" placeholder="Search questions..." />
+      </div>
+
+      <!-- Questions load here -->
+      <div id="questionsList">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Ask + Answers -->
+    <div class="right-panel">
+
+      <!-- Ask Question Card -->
+      <div class="ask-card">
+        <h2><i class="fas fa-pencil-alt"></i> Ask a Question</h2>
+
+        <!-- Shown only when NOT logged in -->
+        <div id="askLoginPrompt" class="login-prompt" style="display:none">
+          <i class="fas fa-lock"></i>
+          <span>Please <a href="login.html">login</a> to ask questions.</span>
+        </div>
+
+        <div id="askForm">
+          <textarea id="questionInput" placeholder="Type your question here... (minimum 10 characters)" maxlength="500"></textarea>
+          <div class="char-count"><span id="charCount">0</span>/500</div>
+          <button class="btn-ask" id="askBtn">
+            <i class="fas fa-paper-plane"></i> Post Question
+          </button>
+        </div>
+      </div>
+
+      <!-- Answers Panel (shows when question clicked) -->
+      <div class="answers-panel" id="answersPanel">
+        <h3><i class="fas fa-comments" style="color:var(--primary)"></i> Answers</h3>
+        <div class="selected-question" id="selectedQuestion"></div>
+
+        <!-- Post Answer Form -->
+        <div class="answer-form" id="answerFormContainer">
+          <div id="answerLoginPrompt" class="login-prompt" style="display:none">
+            <i class="fas fa-lock"></i>
+            <span>Please <a href="login.html">login</a> to post answers.</span>
+          </div>
+          <div id="answerInputArea">
+            <textarea id="answerInput" placeholder="Write your answer here..."></textarea>
+            <button class="btn-post-answer" id="postAnswerBtn">
+              <i class="fas fa-check"></i> Post Answer
+            </button>
+          </div>
+        </div>
+
+        <hr class="answer-divider" />
+
+        <!-- Answers load here -->
+        <div class="answers-title">
+          <i class="fas fa-list"></i>
+          <span id="answersCountLabel">Answers</span>
+        </div>
+        <div id="answersList"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== LOGOUT MODAL ===== -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <h3>Logout</h3>
+      <p>Are you sure you want to logout?</p>
+      <div class="modal-actions">
+        <button id="cancelLogout" class="btn-secondary">Cancel</button>
+        <button id="confirmLogout" class="btn-primary">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:5000/api";
+
+    // ===== NAVBAR =====
+    const hamburger = document.getElementById("hamburger");
+    const navLinks  = document.getElementById("navLinks");
+    hamburger.addEventListener("click", () => navLinks.classList.toggle("open"));
+    navLinks.querySelectorAll("a").forEach(a =>
+      a.addEventListener("click", () => navLinks.classList.remove("open"))
+    );
+
+    // ===== USER SESSION =====
+    const user    = JSON.parse(localStorage.getItem("user"));
+    const userBtn = document.getElementById("userBtn");
+
+    if (user) {
+      userBtn.innerText = "Hi, " + user.username;
+      userBtn.href = "dashboard.html";
+    } else {
+      // Hide ask form, show login prompts
+      document.getElementById("askLoginPrompt").style.display  = "flex";
+      document.getElementById("askForm").style.display          = "none";
+      document.getElementById("answerLoginPrompt").style.display = "flex";
+      document.getElementById("answerInputArea").style.display   = "none";
+    }
+
+    // ===== LOGOUT =====
+    const logoutModal = document.getElementById("logoutModal");
+    document.getElementById("confirmLogout").addEventListener("click", () => {
+      localStorage.removeItem("user");
+      window.location.href = "index.html";
+    });
+    document.getElementById("cancelLogout").addEventListener("click", () => {
+      logoutModal.style.display = "none";
+    });
+
+    // ===== AVATAR COLOURS cycle =====
+    const avatarColors = [
+      "linear-gradient(135deg,#8B5CF6,#6C4EE4)",
+      "linear-gradient(135deg,#60A5FA,#2563EB)",
+      "linear-gradient(135deg,#4ADE80,#16A34A)",
+      "linear-gradient(135deg,#FB923C,#EA580C)",
+      "linear-gradient(135deg,#F472B6,#DB2777)"
+    ];
+
+    // ===== LOAD ALL QUESTIONS =====
+    let allQuestions = [];
+    let activeDoubtId = null;
+
+    async function loadQuestions() {
+      const list = document.getElementById("questionsList");
+      try {
+        const res  = await fetch(`${API}/doubts/all`);
+        const json = await res.json();
+        allQuestions = json.data || [];
+        renderQuestions(allQuestions);
+      } catch (err) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-wifi"></i>
+            <p>Could not connect to server.<br>Make sure backend is running!</p>
+          </div>`;
+      }
+    }
+
+    function renderQuestions(questions) {
+      const list  = document.getElementById("questionsList");
+      const count = document.getElementById("questionCount");
+      count.textContent = `(${questions.length})`;
+
+      if (questions.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-question-circle"></i>
+            <p>No questions yet.<br>Be the first to ask!</p>
+          </div>`;
+        return;
+      }
+
+      list.innerHTML = "";
+      questions.forEach((q, i) => {
+        const card  = document.createElement("div");
+        card.className = "question-card";
+        if (q.id === activeDoubtId) card.classList.add("active");
+
+        const initial = (q.users?.username || "U")[0].toUpperCase();
+        const color   = avatarColors[i % avatarColors.length];
+
+        const timeAgo = getTimeAgo(q.created_at);
+
+        card.innerHTML = `
+          <div class="question-top">
+            <div class="q-avatar" style="background:${color}">${initial}</div>
+            <div class="q-text">
+              <h4>${q.question}</h4>
+              <div class="q-meta">
+                <span><i class="fas fa-user"></i> ${q.users?.username || "Anonymous"}</span>
+                <span><i class="far fa-clock"></i> ${timeAgo}</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          // Remove active from all cards
+          document.querySelectorAll(".question-card").forEach(c => c.classList.remove("active"));
+          card.classList.add("active");
+          activeDoubtId = q.id;
+          loadAnswers(q.id, q.question);
+        });
+
+        list.appendChild(card);
+      });
+    }
+
+    // ===== SEARCH QUESTIONS =====
+    document.getElementById("searchDoubts").addEventListener("input", function() {
+      const search = this.value.toLowerCase();
+      const filtered = allQuestions.filter(q =>
+        q.question.toLowerCase().includes(search)
+      );
+      renderQuestions(filtered);
+    });
+
+    // ===== CHARACTER COUNT =====
+    document.getElementById("questionInput").addEventListener("input", function() {
+      document.getElementById("charCount").textContent = this.value.length;
+    });
+
+    // ===== ASK QUESTION =====
+    document.getElementById("askBtn")?.addEventListener("click", async () => {
+      if (!user) { showToast("Please login first!", "error"); return; }
+
+      const question = document.getElementById("questionInput").value.trim();
+      if (!question || question.length < 10) {
+        showToast("Question must be at least 10 characters ❌", "error");
+        return;
+      }
+
+      const btn = document.getElementById("askBtn");
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+
+      try {
+        const res = await fetch(`${API}/doubts/ask`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "user-id": user.id
+          },
+          body: JSON.stringify({ question })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast("Question posted! ✅", "success");
+          document.getElementById("questionInput").value = "";
+          document.getElementById("charCount").textContent = "0";
+          loadQuestions();
+        } else {
+          showToast(data.message || "Failed to post ❌", "error");
+        }
+      } catch (err) {
+        showToast("Server error ❌", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Question';
+      }
+    });
+
+    // ===== LOAD ANSWERS =====
+    async function loadAnswers(doubtId, questionText) {
+      const panel = document.getElementById("answersPanel");
+      panel.classList.add("show");
+
+      // Scroll to answers panel on mobile
+      if (window.innerWidth < 860) {
+        panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      document.getElementById("selectedQuestion").textContent = questionText;
+
+      // Store doubt id for posting answer
+      document.getElementById("postAnswerBtn").dataset.doubtId = doubtId;
+
+      const list  = document.getElementById("answersList");
+      const label = document.getElementById("answersCountLabel");
+      list.innerHTML = '<div class="spinner"></div>';
+
+      try {
+        const res  = await fetch(`${API}/answers/${doubtId}`);
+        const json = await res.json();
+        const answers = json.data || [];
+
+        label.textContent = `${answers.length} Answer${answers.length !== 1 ? "s" : ""}`;
+
+        if (answers.length === 0) {
+          list.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-comment-slash"></i>
+              <p>No answers yet. Be the first to help!</p>
+            </div>`;
+          return;
+        }
+
+        list.innerHTML = "";
+        answers.forEach((ans, i) => {
+          const item = document.createElement("div");
+          item.className = "answer-item";
+          const color = avatarColors[i % avatarColors.length];
+          const timeAgo = getTimeAgo(ans.created_at);
+
+          item.innerHTML = `
+            <div class="answer-top">
+              <div class="answer-user">
+                <div style="width:24px;height:24px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:white">
+                  ${(ans.users?.username || "U")[0].toUpperCase()}
+                </div>
+                ${ans.users?.username || "Anonymous"} · ${timeAgo}
+              </div>
+              <button class="upvote-btn" id="upvote-${ans.id}" onclick="upvoteAnswer(${ans.id})">
+                <i class="fas fa-arrow-up"></i> ${ans.upvotes || 0}
+              </button>
+            </div>
+            <p class="answer-text">${ans.answer}</p>
+          `;
+
+          list.appendChild(item);
+        });
+
+      } catch (err) {
+        list.innerHTML = `<div class="empty-state"><i class="fas fa-wifi"></i><p>Could not load answers.</p></div>`;
+      }
+    }
+
+    // ===== POST ANSWER =====
+    document.getElementById("postAnswerBtn")?.addEventListener("click", async function() {
+      if (!user) { showToast("Please login first!", "error"); return; }
+
+      const answer   = document.getElementById("answerInput").value.trim();
+      const doubt_id = this.dataset.doubtId;
+
+      if (!answer || answer.length < 5) {
+        showToast("Answer is too short ❌", "error");
+        return;
+      }
+
+      this.disabled = true;
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+
+      try {
+        const res = await fetch(`${API}/answers/add`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "user-id": user.id
+          },
+          body: JSON.stringify({ answer, doubt_id })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast("Answer posted! ✅", "success");
+          document.getElementById("answerInput").value = "";
+          // Reload answers for this question
+          const q = allQuestions.find(q => q.id == doubt_id);
+          loadAnswers(doubt_id, q?.question || "");
+        } else {
+          showToast(data.message || "Failed ❌", "error");
+        }
+      } catch (err) {
+        showToast("Server error ❌", "error");
+      } finally {
+        this.disabled = false;
+        this.innerHTML = '<i class="fas fa-check"></i> Post Answer';
+      }
+    });
+
+    // ===== UPVOTE =====
+    async function upvoteAnswer(answerId) {
+      if (!user) { showToast("Please login to upvote ❌", "error"); return; }
+
+      const btn = document.getElementById(`upvote-${answerId}`);
+      btn.disabled = true;
+
+      try {
+        const res  = await fetch(`${API}/answers/upvote/${answerId}`, {
+          method: "POST",
+          headers: { "user-id": user.id }
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          // Update button count instantly
+          btn.innerHTML = `<i class="fas fa-arrow-up"></i> ${data.upvotes}`;
+          btn.classList.add("upvoted");
+          showToast("Upvoted! ✅", "success");
+        } else {
+          showToast(data.message || "Failed ❌", "error");
+        }
+      } catch (err) {
+        showToast("Server error ❌", "error");
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ===== TIME AGO HELPER =====
+    function getTimeAgo(dateStr) {
+      const now  = new Date();
+      const date = new Date(dateStr);
+      const diff = Math.floor((now - date) / 1000); // seconds
+
+      if (diff < 60)   return "just now";
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400)return `${Math.floor(diff / 3600)}h ago`;
+      return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    // ===== TOAST =====
+    function showToast(message, type = "success") {
+      const existing = document.querySelector(".toast");
+      if (existing) existing.remove();
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas fa-${type === "success" ? "check-circle" : "exclamation-circle"}"></i> ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ===== INIT =====
+    loadQuestions();
+  </script>
+</body>
+</html>

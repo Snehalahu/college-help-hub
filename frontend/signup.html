@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup - College Help Hub</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="auth-body">
+
+  <div class="auth-container">
+
+    <!-- Left Side (Branding) -->
+    <div class="auth-left">
+      <h1>Join College Help Hub 🚀</h1>
+      <p>Access notes, internships, doubts & AI — all in one place.</p>
+    </div>
+
+    <!-- Right Side (Form) -->
+    <div class="auth-right">
+      <div class="auth-card">
+        <h2>Create Account</h2>
+
+        <!-- script.js now has the signupForm handler that was missing before -->
+        <form id="signupForm">
+          <input type="text"     id="username" placeholder="Username" class="auth-input" required>
+          <input type="email"    id="email"    placeholder="Email"    class="auth-input" required>
+          <input type="password" id="password" placeholder="Password" class="auth-input" required>
+          <button type="submit" class="auth-btn">Signup</button>
+        </form>
+
+        <p class="auth-switch">
+          Already have an account? <a href="login.html">Login</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

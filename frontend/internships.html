@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internships - College Help Hub</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 40%, #F6F7FB 100%);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+    .page-hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .page-hero p { color: var(--text-secondary); font-size: 1rem; }
+
+    /* Stats bar */
+    .stats-bar {
+      max-width: 1100px;
+      margin: 1.5rem auto 0;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .stat-chip {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: var(--shadow);
+    }
+    .stat-chip i { color: var(--accent); }
+
+    /* Filter bar */
+    .filter-bar {
+      max-width: 1100px;
+      margin: 1.5rem auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    .search-box i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+    .search-box input {
+      width: 100%;
+      padding: 0.7rem 1rem 0.7rem 2.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      background: white;
+      transition: border-color 0.2s;
+    }
+    .search-box input:focus { border-color: var(--primary); }
+
+    .filter-select {
+      padding: 0.7rem 1.2rem;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      background: white;
+      cursor: pointer;
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .filter-select:focus { border-color: var(--primary); }
+
+    /* Tabs */
+    .tabs {
+      max-width: 1100px;
+      margin: 0 auto 1rem;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-btn:hover  { color: var(--primary); }
+
+    /* Internships Grid */
+    .internships-container {
+      max-width: 1100px;
+      margin: 0 auto 4rem;
+      padding: 0 1.5rem;
+    }
+    .internships-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Internship Card */
+    .int-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: transform 0.25s, box-shadow 0.25s, opacity 0.4s;
+      position: relative;
+    }
+    .int-card.visible { opacity: 1; transform: translateY(0); }
+    .int-card:hover   { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+    .int-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .company-info { display: flex; align-items: center; gap: 0.75rem; }
+    .company-avatar {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .company-name { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .company-role { font-size: 0.8rem; color: var(--text-secondary); }
+
+    .bookmark-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      transition: color 0.2s, transform 0.2s;
+      padding: 0.2rem;
+    }
+    .bookmark-btn:hover    { color: var(--accent); transform: scale(1.2); }
+    .bookmark-btn.bookmarked { color: var(--accent); }
+
+    .int-title { font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 700; }
+
+    .int-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .int-meta span { display: flex; align-items: center; gap: 0.3rem; }
+    .int-meta i    { color: var(--primary); }
+
+    .int-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    .stipend-badge {
+      background: #DCFCE7;
+      color: #16A34A;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .btn-apply-full {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.65rem 1.2rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      justify-content: center;
+      text-decoration: none;
+      margin-top: auto;
+    }
+    .btn-apply-full:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+    /* Add internship card */
+    .add-int-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 2px dashed var(--border);
+      margin-bottom: 2rem;
+    }
+    .add-int-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .add-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .form-group input, .form-group select {
+      padding: 0.6rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.88rem;
+      outline: none;
+      background: var(--bg);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--primary); background: white; }
+    .form-full { grid-column: 1 / -1; }
+
+    .login-prompt {
+      background: #EDE9FE;
+      border: 1.5px solid var(--primary);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .login-prompt a { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .add-form-grid { grid-template-columns: 1fr; }
+      .filter-bar    { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>College Help Hub</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="notes.html">Notes</a></li>
+        <li><a href="internships.html" class="active">Internships</a></li>
+        <li><a href="doubts.html">Doubts</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="chatbot.html">AI Chat</a></li>
+      </ul>
+      <a href="login.html" id="userBtn" class="btn-login">Login / Signup</a>
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="page-hero">
+    <h1><i class="fas fa-briefcase" style="color:var(--accent)"></i> Internship Listings</h1>
+    <p>Find the perfect internship to launch your career 🚀</p>
+    <div class="stats-bar" style="justify-content:center;margin-top:1rem">
+      <div class="stat-chip"><i class="fas fa-briefcase"></i> <span id="totalJobs">...</span> Listings</div>
+      <div class="stat-chip"><i class="fas fa-building"></i> Top Companies</div>
+      <div class="stat-chip"><i class="fas fa-map-marker-alt"></i> Remote & On-site</div>
+    </div>
+  </section>
+
+  <!-- ===== FILTER BAR ===== -->
+  <div class="filter-bar">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search by title or company..." />
+    </div>
+    <select class="filter-select" id="typeFilter">
+      <option value="">All Types</option>
+      <option value="Full Time">Full Time</option>
+      <option value="Part Time">Part Time</option>
+    </select>
+    <select class="filter-select" id="locationFilter">
+      <option value="">All Locations</option>
+      <option value="Remote">Remote</option>
+      <option value="On-site">On-site</option>
+    </select>
+  </div>
+
+  <!-- ===== TABS ===== -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="all">All Listings</button>
+    <button class="tab-btn" data-tab="bookmarked">⭐ Bookmarked</button>
+    <button class="tab-btn" data-tab="add">+ Add Listing</button>
+  </div>
+
+  <!-- ===== INTERNSHIPS CONTAINER ===== -->
+  <div class="internships-container">
+
+    <!-- ADD INTERNSHIP FORM (hidden by default) -->
+    <div class="add-int-card" id="addPanel" style="display:none">
+      <h3><i class="fas fa-plus-circle"></i> Post an Internship</h3>
+      <div class="login-prompt" id="addLoginPrompt">
+        <i class="fas fa-lock"></i>
+        <span>Please <a href="login.html">login</a> to post internships.</span>
+      </div>
+      <form id="addForm">
+        <div class="add-form-grid">
+          <div class="form-group">
+            <label>Job Title *</label>
+            <input type="text" id="intTitle" placeholder="e.g. Frontend Developer Intern" required />
+          </div>
+          <div class="form-group">
+            <label>Company *</label>
+            <input type="text" id="intCompany" placeholder="e.g. Google" required />
+          </div>
+          <div class="form-group">
+            <label>Stipend</label>
+            <input type="text" id="intStipend" placeholder="e.g. ₹20,000/month" />
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" id="intLocation" placeholder="e.g. Remote" />
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select id="intType">
+              <option>Full Time</option>
+              <option>Part Time</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Apply Link *</label>
+            <input type="url" id="intLink" placeholder="https://..." required />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" style="margin-top:1rem" id="postBtn">
+          <i class="fas fa-paper-plane"></i> Post Internship
+        </button>
+      </form>
+    </div>
+
+    <!-- COUNT -->
+    <p style="font-size:0.9rem;color:var(--text-secondary);font-weight:600;margin-bottom:1rem" id="listingCount"></p>
+
+    <!-- GRID -->
+    <div class="internships-grid" id="internshipsGrid">
+      <div class="spinner"></div>
+    </div>
+
+  </div>
+
+  <!-- LOGOUT MODAL -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <h3>Logout</h3>
+      <p>Are you sure you want to logout?</p>
+      <div class="modal-actions">
+        <button id="cancelLogout" class="btn-secondary">Cancel</button>
+        <button id="confirmLogout" class="btn-primary">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:5000/api";
+
+    // ===== NAVBAR =====
+    const hamburger = document.getElementById("hamburger");
+    const navLinks  = document.getElementById("navLinks");
+    hamburger.addEventListener("click", () => navLinks.classList.toggle("open"));
+    navLinks.querySelectorAll("a").forEach(a =>
+      a.addEventListener("click", () => navLinks.classList.remove("open"))
+    );
+
+    // ===== USER =====
+    const user    = JSON.parse(localStorage.getItem("user"));
+    const userBtn = document.getElementById("userBtn");
+    if (user) { userBtn.innerText = "Hi, " + user.username; userBtn.href = "dashboard.html"; }
+
+    // ===== LOGOUT =====
+    document.getElementById("confirmLogout").addEventListener("click", () => {
+      localStorage.removeItem("user");
+      window.location.href = "index.html";
+    });
+    document.getElementById("cancelLogout").addEventListener("click", () => {
+      document.getElementById("logoutModal").style.display = "none";
+    });
+
+    // ===== BOOKMARKS (stored in localStorage) =====
+    let bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+
+    function toggleBookmark(id) {
+      const idx = bookmarks.indexOf(id);
+      if (idx === -1) {
+        bookmarks.push(id);
+        showToast("Bookmarked! ⭐", "success");
+      } else {
+        bookmarks.splice(idx, 1);
+        showToast("Bookmark removed", "success");
+      }
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+      // Refresh the button state
+      const btn = document.getElementById(`bm-${id}`);
+      if (btn) btn.classList.toggle("bookmarked", bookmarks.includes(id));
+    }
+
+    // ===== TABS =====
+    let currentTab = "all";
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
+        currentTab = this.dataset.tab;
+
+        document.getElementById("addPanel").style.display = currentTab === "add" ? "block" : "none";
+
+        if (currentTab === "add") {
+          // Show login prompt if not logged in
+          document.getElementById("addLoginPrompt").style.display = user ? "none" : "flex";
+          document.getElementById("addForm").style.display = user ? "block" : "none";
+        } else {
+          applyFilters();
+        }
+      });
+    });
+
+    // ===== LOAD INTERNSHIPS =====
+    let allInternships = [];
+
+    async function loadInternships() {
+      try {
+        const res  = await fetch(`${API}/internships/all`);
+        const json = await res.json();
+        allInternships = json.data || [];
+        document.getElementById("totalJobs").textContent = allInternships.length;
+        applyFilters();
+      } catch (err) {
+        document.getElementById("internshipsGrid").innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <i class="fas fa-wifi"></i>
+            <p>Could not connect to server.</p>
+          </div>`;
+      }
+    }
+
+    function applyFilters() {
+      if (currentTab === "add") return;
+
+      const search   = document.getElementById("searchInput").value.toLowerCase();
+      const type     = document.getElementById("typeFilter").value;
+      const location = document.getElementById("locationFilter").value;
+
+      let filtered = allInternships.filter(i => {
+        const matchSearch   = i.title.toLowerCase().includes(search) ||
+                              i.company.toLowerCase().includes(search);
+        const matchType     = !type     || i.type === type;
+        const matchLocation = !location || (i.location || "").toLowerCase().includes(location.toLowerCase());
+        return matchSearch && matchType && matchLocation;
+      });
+
+      if (currentTab === "bookmarked") {
+        filtered = filtered.filter(i => bookmarks.includes(i.id));
+      }
+
+      renderInternships(filtered);
+    }
+
+    function renderInternships(list) {
+      const grid  = document.getElementById("internshipsGrid");
+      const count = document.getElementById("listingCount");
+
+      count.textContent = `${list.length} listing${list.length !== 1 ? "s" : ""} found`;
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <i class="fas fa-briefcase"></i>
+            <p>${currentTab === "bookmarked" ? "No bookmarked internships yet." : "No internships found."}</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = "";
+
+      list.forEach((item, i) => {
+        const card = document.createElement("div");
+        card.className = "int-card";
+
+        const isBookmarked = bookmarks.includes(item.id);
+        const initial      = (item.company || "?")[0].toUpperCase();
+
+        card.innerHTML = `
+          <div class="int-card-top">
+            <div class="company-info">
+              <div class="company-avatar">${initial}</div>
+              <div>
+                <div class="company-name">${item.company}</div>
+                <div class="company-role">Hiring</div>
+              </div>
+            </div>
+            <button class="bookmark-btn ${isBookmarked ? "bookmarked" : ""}"
+                    id="bm-${item.id}"
+                    onclick="toggleBookmark(${item.id})"
+                    title="${isBookmarked ? "Remove bookmark" : "Bookmark"}">
+              <i class="fas fa-bookmark"></i>
+            </button>
+          </div>
+          <div class="int-title">${item.title}</div>
+          <div class="int-meta">
+            <span><i class="fas fa-map-marker-alt"></i> ${item.location || "Remote"}</span>
+            <span><i class="far fa-clock"></i> ${item.type || "Full Time"}</span>
+          </div>
+          <div class="int-badges">
+            <div class="stipend-badge">
+              <i class="fas fa-rupee-sign"></i> ${item.stipend || "Unpaid"}
+            </div>
+            <span class="badge full-time">${item.type || "Full Time"}</span>
+          </div>
+          <a href="${item.apply_link}" target="_blank" class="btn-apply-full">
+            <i class="fas fa-external-link-alt"></i> Apply Now
+          </a>
+        `;
+
+        grid.appendChild(card);
+        setTimeout(() => card.classList.add("visible"), i * 80);
+      });
+    }
+
+    // ===== SEARCH & FILTER EVENTS =====
+    document.getElementById("searchInput").addEventListener("input",    applyFilters);
+    document.getElementById("typeFilter").addEventListener("change",    applyFilters);
+    document.getElementById("locationFilter").addEventListener("change", applyFilters);
+
+    // ===== ADD INTERNSHIP FORM =====
+    document.getElementById("addForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!user) { showToast("Please login first!", "error"); return; }
+
+      const title     = document.getElementById("intTitle").value.trim();
+      const company   = document.getElementById("intCompany").value.trim();
+      const stipend   = document.getElementById("intStipend").value.trim();
+      const location  = document.getElementById("intLocation").value.trim();
+      const type      = document.getElementById("intType").value;
+      const apply_link= document.getElementById("intLink").value.trim();
+
+      const btn = document.getElementById("postBtn");
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+
+      try {
+        const res = await fetch(`${API}/internships/add`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "user-id": user.id },
+          body: JSON.stringify({ title, company, stipend, location, type, apply_link })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast("Internship posted! ✅", "success");
+          e.target.reset();
+          loadInternships();
+        } else {
+          showToast(data.message || "Failed ❌", "error");
+        }
+      } catch (err) {
+        showToast("Server error ❌", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Internship';
+      }
+    });
+
+    // ===== TOAST =====
+    function showToast(message, type = "success") {
+      const existing = document.querySelector(".toast");
+      if (existing) existing.remove();
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas fa-${type === "success" ? "check-circle" : "exclamation-circle"}"></i> ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ===== INIT =====
+    loadInternships();
+  </script>
+</body>
+</html>
