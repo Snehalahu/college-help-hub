@@ -19,7 +19,7 @@ const protect  = require("../middleware/authMiddleware");
 
 // ================= ADD INTERNSHIP =================
 // 🔒 Protected — only logged-in users can post internships
-// URL: POST http://localhost:5000/api/internships/add
+// URL: POST https://college-help-hub-api.vercel.app/api/internships/add
 router.post("/add", protect, async (req, res) => {
   const { title, company, stipend, apply_link, location, type } = req.body;
 
@@ -70,7 +70,7 @@ router.post("/add", protect, async (req, res) => {
 
 // ================= GET ALL INTERNSHIPS =================
 // 🔓 Public — anyone can browse internships
-// URL: GET http://localhost:5000/api/internships/all
+// URL: GET https://college-help-hub-api.vercel.app/api/internships/all
 router.get("/all", async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -102,9 +102,9 @@ router.get("/all", async (req, res) => {
 
 // ================= SEARCH / FILTER INTERNSHIPS =================
 // 🔓 Public — search by company name or job type
-// URL: GET http://localhost:5000/api/internships/search?company=google
-// URL: GET http://localhost:5000/api/internships/search?type=Full Time
-// URL: GET http://localhost:5000/api/internships/search?q=developer
+// URL: GET https://college-help-hub-api.vercel.app/api/internships/search?company=google
+// URL: GET https://college-help-hub-api.vercel.app/api/internships/search?type=Full Time
+// URL: GET https://college-help-hub-api.vercel.app/api/internships/search?q=developer
 //
 // This is a QUERY PARAMETER — the "?" part in the URL
 // Example: /search?company=google  →  finds all Google internships
@@ -148,7 +148,7 @@ router.get("/search", async (req, res) => {
 
 // ================= GET ONE INTERNSHIP =================
 // 🔓 Public — get full details of one internship
-// URL: GET http://localhost:5000/api/internships/123
+// URL: GET https://college-help-hub-api.vercel.app/api/internships/123
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -178,7 +178,7 @@ router.get("/:id", async (req, res) => {
 
 // ================= DELETE INTERNSHIP =================
 // 🔒 Protected — only logged-in users can delete
-// URL: DELETE http://localhost:5000/api/internships/123
+// URL: DELETE https://college-help-hub-api.vercel.app/api/internships/123
 router.delete("/:id", protect, async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;

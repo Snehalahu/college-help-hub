@@ -23,7 +23,7 @@ const protect  = require("../middleware/authMiddleware");
 
 // ================= GET DASHBOARD DATA =================
 // 🔒 Protected — users can only see their OWN dashboard
-// URL: GET http://localhost:5000/api/dashboard/123
+// URL: GET https://college-help-hub-api.vercel.app/api/dashboard/123
 router.get("/:user_id", protect, async (req, res) => {
   const userId = req.params.user_id;
 

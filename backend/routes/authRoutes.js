@@ -5,7 +5,7 @@ const bcrypt   = require("bcrypt");
 
 // ================= SIGNUP =================
 // Called when user clicks "Signup" button
-// URL: POST http://localhost:5000/api/auth/register
+// URL: POST https://college-help-hub-api.vercel.app/api/auth/register
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -60,7 +60,7 @@ router.post("/register", async (req, res) => {
 
 // ================= LOGIN =================
 // Called when user clicks "Login" button
-// URL: POST http://localhost:5000/api/auth/login
+// URL: POST https://college-help-hub-api.vercel.app/api/auth/login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 

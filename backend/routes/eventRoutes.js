@@ -22,7 +22,7 @@ const protect  = require("../middleware/authMiddleware");
 
 // ================= GET ALL EVENTS =================
 // 🔓 Public — anyone can see upcoming events
-// URL: GET http://localhost:5000/api/events/all
+// URL: GET https://college-help-hub-api.vercel.app/api/events/all
 router.get("/all", async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -58,7 +58,7 @@ router.get("/all", async (req, res) => {
 
 // ================= GET ONE EVENT =================
 // 🔓 Public — see full details of one event
-// URL: GET http://localhost:5000/api/events/123
+// URL: GET https://college-help-hub-api.vercel.app/api/events/123
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -88,7 +88,7 @@ router.get("/:id", async (req, res) => {
 
 // ================= ADD EVENT =================
 // 🔒 Protected — only logged-in users can add events
-// URL: POST http://localhost:5000/api/events/add
+// URL: POST https://college-help-hub-api.vercel.app/api/events/add
 router.post("/add", protect, async (req, res) => {
   const { title, date, location } = req.body;
 
@@ -141,7 +141,7 @@ router.post("/add", protect, async (req, res) => {
 
 // ================= REGISTER FOR EVENT =================
 // 🔒 Protected — only logged-in users can register
-// URL: POST http://localhost:5000/api/events/register/123
+// URL: POST https://college-help-hub-api.vercel.app/api/events/register/123
 //
 // NOTE: Since your events table doesn't have a registrations column yet,
 // this route confirms registration and returns success.
@@ -193,7 +193,7 @@ router.post("/register/:id", protect, async (req, res) => {
 
 // ================= DELETE EVENT =================
 // 🔒 Protected — only logged-in users can delete events
-// URL: DELETE http://localhost:5000/api/events/123
+// URL: DELETE https://college-help-hub-api.vercel.app/api/events/123
 router.delete("/:id", protect, async (req, res) => {
   const { id } = req.params;
 

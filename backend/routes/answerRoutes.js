@@ -18,7 +18,7 @@ const protect  = require("../middleware/authMiddleware");
 
 // ================= ADD ANSWER =================
 // 🔒 Protected — only logged-in users can answer
-// URL: POST http://localhost:5000/api/answers/add
+// URL: POST https://college-help-hub-api.vercel.app/api/answers/add
 router.post("/add", protect, async (req, res) => {
   const { answer, doubt_id } = req.body;
 
@@ -88,7 +88,7 @@ router.post("/add", protect, async (req, res) => {
 
 // ================= GET ANSWERS BY DOUBT =================
 // 🔓 Public — anyone can read answers
-// URL: GET http://localhost:5000/api/answers/123
+// URL: GET https://college-help-hub-api.vercel.app/api/answers/123
 router.get("/:doubt_id", async (req, res) => {
   const { doubt_id } = req.params;
 
@@ -131,7 +131,7 @@ router.get("/:doubt_id", async (req, res) => {
 
 // ================= UPVOTE ANSWER =================
 // 🔒 Protected — only logged-in users can upvote
-// URL: POST http://localhost:5000/api/answers/upvote/123
+// URL: POST https://college-help-hub-api.vercel.app/api/answers/upvote/123
 //
 // ⚠️ NOTE: Your old upvote had a RACE CONDITION bug!
 // If two people upvote at the exact same time:
@@ -190,7 +190,7 @@ router.post("/upvote/:id", protect, async (req, res) => {
 
 // ================= DELETE ANSWER =================
 // 🔒 Protected — only the answer's owner can delete it
-// URL: DELETE http://localhost:5000/api/answers/123
+// URL: DELETE https://college-help-hub-api.vercel.app/api/answers/123
 router.delete("/:id", protect, async (req, res) => {
   const answerId = req.params.id;
   const userId   = req.user.id;

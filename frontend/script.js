@@ -1,7 +1,7 @@
 console.log("Script loaded");
 
 // ================= API BASE =================
-const API = "http://localhost:5000/api";
+const API = "https://college-help-hub-api.vercel.app/api";
 
 // ================= SAFE DOM LOAD =================
 document.addEventListener("DOMContentLoaded", () => {

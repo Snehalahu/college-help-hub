@@ -18,7 +18,7 @@ const protect  = require("../middleware/authMiddleware");
 
 // ================= ASK A QUESTION =================
 // 🔒 Protected — only logged-in users can ask
-// URL: POST http://localhost:5000/api/doubts/ask
+// URL: POST https://college-help-hub-api.vercel.app/api/doubts/ask
 router.post("/ask", protect, async (req, res) => {
   const { question } = req.body;
 
@@ -62,7 +62,7 @@ router.post("/ask", protect, async (req, res) => {
 
 // ================= GET ALL QUESTIONS =================
 // 🔓 Public — anyone can read questions
-// URL: GET http://localhost:5000/api/doubts/all
+// URL: GET https://college-help-hub-api.vercel.app/api/doubts/all
 router.get("/all", async (req, res) => {
   try {
     // Join with users table to get the username of who asked
@@ -100,7 +100,7 @@ router.get("/all", async (req, res) => {
 
 // ================= GET ONE QUESTION (with answers) =================
 // 🔓 Public — view a single question and all its answers
-// URL: GET http://localhost:5000/api/doubts/123
+// URL: GET https://college-help-hub-api.vercel.app/api/doubts/123
 router.get("/:id", async (req, res) => {
   const doubtId = req.params.id;
 
@@ -161,7 +161,7 @@ router.get("/:id", async (req, res) => {
 
 // ================= DELETE QUESTION =================
 // 🔒 Protected — only the question's owner can delete it
-// URL: DELETE http://localhost:5000/api/doubts/123
+// URL: DELETE https://college-help-hub-api.vercel.app/api/doubts/123
 router.delete("/:id", protect, async (req, res) => {
   const doubtId = req.params.id;
   const userId  = req.user.id;

@@ -18,7 +18,7 @@ const protect  = require("../middleware/authMiddleware");
 
 // ================= ADD NOTE =================
 // 🔒 Protected — only logged-in users can upload notes
-// URL: POST http://localhost:5000/api/notes/add
+// URL: POST https://college-help-hub-api.vercel.app/api/notes/add
 router.post("/add", protect, async (req, res) => {
   const { title, subject, content } = req.body;
 
@@ -55,7 +55,7 @@ router.post("/add", protect, async (req, res) => {
 
 // ================= GET ALL NOTES =================
 // 🔓 Public — anyone can browse notes
-// URL: GET http://localhost:5000/api/notes/
+// URL: GET https://college-help-hub-api.vercel.app/api/notes/
 router.get("/", async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -84,7 +84,7 @@ router.get("/", async (req, res) => {
 
 // ================= GET NOTES BY USER =================
 // 🔓 Public — used to show a user's notes on their dashboard
-// URL: GET http://localhost:5000/api/notes/user/123
+// URL: GET https://college-help-hub-api.vercel.app/api/notes/user/123
 router.get("/user/:id", async (req, res) => {
   const userId = req.params.id;
 
@@ -116,7 +116,7 @@ router.get("/user/:id", async (req, res) => {
 
 // ================= DELETE NOTE =================
 // 🔒 Protected — only the note's owner can delete it
-// URL: DELETE http://localhost:5000/api/notes/123
+// URL: DELETE https://college-help-hub-api.vercel.app/api/notes/123
 router.delete("/:id", protect, async (req, res) => {
   const noteId = req.params.id;
   const userId = req.user.id; // from middleware
